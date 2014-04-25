@@ -99,7 +99,6 @@ group :development do
 
   # Use puma for development
   gem 'puma', :require => false
-
 end
 
 group :test do
@@ -113,7 +112,8 @@ group :test do
 end
 
 group :heroku, :production do
-  gem 'unicorn', :require => false
+  # gem 'unicorn', :require => false
+  gem 'thin'
 end
 
 
