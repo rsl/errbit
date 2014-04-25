@@ -113,8 +113,9 @@ end
 
 group :heroku, :production do
   # gem 'unicorn', :require => false
-  gem 'thin'
 end
+# Install it no matter what
+gem 'thin'
 
 
 # Gems used only for assets and not required
