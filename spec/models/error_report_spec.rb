@@ -47,6 +47,19 @@ describe ErrorReport do
       end
     end
 
+    describe "#fingerprint_strategy" do
+      after(:all) {
+        error_report.fingerprint_strategy = Fingerprint
+      }
+
+      it "should be possible to change how fingerprints are generated" do
+        strategy = double()
+        strategy.should_receive(:generate){ 'fingerprints' }
+        error_report.fingerprint_strategy = strategy
+        error_report.generate_notice!
+      end
+    end
+
     describe "#generate_notice!" do
       it "save a notice" do
         expect {
@@ -228,6 +241,36 @@ describe ErrorReport do
         end
 
       end
+    end
+
+    describe "#should_keep?" do
+      context "with current app version not set" do
+        before do
+          error_report.app.current_app_version = nil
+          error_report.server_environment['app-version'] = '1.0'
+        end
+
+        it "return true" do
+          expect(error_report.should_keep?).to be true
+        end
+      end
+
+      context "with current app version set" do
+        before do
+          error_report.app.current_app_version = '1.0'
+        end
+
+        it "return true if current or newer" do
+          error_report.server_environment['app-version'] = '1.0'
+          expect(error_report.should_keep?).to be true
+        end
+
+        it "return false if older" do
+          error_report.server_environment['app-version'] = '0.9'
+          expect(error_report.should_keep?).to be false
+        end
+      end
+
     end
 
   end
